@@ -36,19 +36,20 @@
   </developers>
 
   <distributionManagement>
+    <!-- todo: remove this section after adding parent pom -->
+    <!-- remote repo into which to publish output from this project -->
     <repository>
-      <id>nexus-repository</id>
-      <name>Nexus Release Repository</name>
-      <url>https://nexus.example.com/repository/maven-releases/</url>
+      <id>bha-maven-repo</id>
+      <url>https://pinginx.dannyrollo.com/nexus/repository/bha-maven-repo/</url>
     </repository>
     <snapshotRepository>
-      <id>nexus-repository</id>
-      <name>Nexus Snapshot Repository</name>
-      <url>https://nexus.example.com/repository/maven-snapshots/</url>
+      <id>bha-maven-repo-snapshot</id>
+      <url>https://pinginx.dannyrollo.com/nexus/repository/bha-maven-repo-snapshot/</url>
     </snapshotRepository>
   </distributionManagement>
 
   <properties>
+    <!-- todo: remove some of these props after adding parent pom that defines them -->
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

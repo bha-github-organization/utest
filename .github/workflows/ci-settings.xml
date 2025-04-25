@@ -1,0 +1,11 @@
+<settings>
+  <servers>
+    <!-- Beacon Hill : begin -->
+    <server>
+      <id>bha-maven-repo-snapshot</id>
+      <username>${env.BHA_REPO_USERNAME}</username>
+      <password>${env.BHA_REPO_PASSWORD}</password>
+    </server>
+    <!-- Beacon Hill : end -->
+  </servers>
+</settings>
