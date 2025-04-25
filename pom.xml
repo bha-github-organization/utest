@@ -12,6 +12,7 @@
   <groupId>com.bhaweb.util</groupId>
   <artifactId>utest</artifactId>
   <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
 
   <name>Raspberry Pi Detector</name>
   <description>A utility to detect if the application is running on a Raspberry Pi</description>
