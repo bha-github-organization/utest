@@ -26,9 +26,6 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-        server-id: nexus-repository
-        server-username: NEXUS_USERNAME
-        server-password: NEXUS_PASSWORD
 
     - name: Build and Test with Maven
       run: ./mvnw clean test
@@ -36,5 +33,5 @@ jobs:
     - name: Publish to Nexus
       run: ./mvnw deploy -DskipTests
       env:
-        NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-        NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+        BHA_REPO_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+        BHA_REPO_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
