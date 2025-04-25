@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- TODO: add parent after publishing to centrol
+  <parent>
+    <groupId>com.bhaweb.pom</groupId>
+    <artifactId>top</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+-->
+  <groupId>com.bhaweb.util</groupId>
+  <artifactId>utest</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <name>Raspberry Pi Detector</name>
+  <description>A utility to detect if the application is running on a Raspberry Pi</description>
+  <url>https://github.com/bhaweb/raspberry-pi-detector</url>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <id>danrollo</id>
+      <name>Dan Rollo</name>
+      <email>danrollo@gmail.com</email>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <distributionManagement>
+    <repository>
+      <id>nexus-repository</id>
+      <name>Nexus Release Repository</name>
+      <url>https://nexus.example.com/repository/maven-releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>nexus-repository</id>
+      <name>Nexus Snapshot Repository</name>
+      <url>https://nexus.example.com/repository/maven-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+  <properties>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <junit.version>5.8.2</junit.version>
+    <mockito.version>4.5.1</mockito.version>
+  </properties>
+
+  <dependencies>
+    <!-- JUnit 5 -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Mockito -->
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-inline</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

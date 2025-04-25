@@ -1,0 +1,27 @@
+name: PR Test
+
+# This workflow will run tests when a PR is created or updated against the main branch
+# It ensures that all tests pass before the PR can be merged
+
+on:
+  pull_request:
+    branches: [ main ]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Build and Test with Maven
+      run: ./mvnw clean test

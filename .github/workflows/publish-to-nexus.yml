@@ -1,0 +1,40 @@
+name: Publish to Nexus
+
+# This workflow will publish the project to a Nexus repository when code is pushed to the main branch
+# (which happens when a PR is merged)
+# 
+# Required secrets:
+# - NEXUS_USERNAME: Username for Nexus authentication
+# - NEXUS_PASSWORD: Password for Nexus authentication
+#
+# Note: Update the repository URLs in pom.xml to point to your actual Nexus repositories
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+        server-id: nexus-repository
+        server-username: NEXUS_USERNAME
+        server-password: NEXUS_PASSWORD
+
+    - name: Build and Test with Maven
+      run: ./mvnw clean test
+
+    - name: Publish to Nexus
+      run: ./mvnw deploy -DskipTests
+      env:
+        NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+        NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
