@@ -2,13 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <!-- TODO: add parent after publishing to centrol
   <parent>
     <groupId>com.bhaweb.pom</groupId>
     <artifactId>top</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
--->
+
   <groupId>com.bhaweb.util</groupId>
   <artifactId>utest</artifactId>
   <version>1.0-SNAPSHOT</version>
@@ -36,24 +35,7 @@
     </developer>
   </developers>
 
-  <distributionManagement>
-    <!-- todo: remove this section after adding parent pom -->
-    <!-- remote repo into which to publish output from this project -->
-    <repository>
-      <id>bha-maven-repo</id>
-      <url>https://pinginx.dannyrollo.com/nexus/repository/bha-maven-repo/</url>
-    </repository>
-    <snapshotRepository>
-      <id>bha-maven-repo-snapshot</id>
-      <url>https://pinginx.dannyrollo.com/nexus/repository/bha-maven-repo-snapshot/</url>
-    </snapshotRepository>
-  </distributionManagement>
-
   <properties>
-    <!-- todo: remove some of these props after adding parent pom that defines them -->
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <junit.version>5.8.2</junit.version>
     <mockito.version>4.5.1</mockito.version>
   </properties>
