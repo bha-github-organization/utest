@@ -1,0 +1,61 @@
+name: Publish to Maven Central
+
+# This workflow will publish the project to Maven Central when code is pushed to the main branch
+# (which happens when a PR is merged)
+# 
+# Required secrets:
+# - OSSRH_USERNAME: Username for Sonatype OSSRH
+# - OSSRH_PASSWORD: Password for Sonatype OSSRH
+# - GPG_PRIVATE_KEY: GPG private key in ASCII armor format (exported with: gpg --armor --export-secret-keys KEY_ID)
+# - GPG_PASSPHRASE: Passphrase for the GPG key
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: 'Release version (leave empty for snapshot)'
+        required: false
+
+jobs:
+  publish-central:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+        server-id: ossrh
+        server-username: MAVEN_USERNAME
+        server-password: MAVEN_PASSWORD
+        gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+        gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+    - name: Build and Test with Maven
+      run: ./mvnw clean test
+
+    - name: Set Release Version
+      if: github.event.inputs.release_version != ''
+      run: |
+        ./mvnw versions:set -DnewVersion=${{ github.event.inputs.release_version }}
+        ./mvnw versions:commit
+
+    - name: Publish to Maven Central
+      run: |
+        if [ -z "${{ github.event.inputs.release_version }}" ]; then
+          # Snapshot deployment
+          ./mvnw deploy -s .github/workflows/ci-settings.xml
+        else
+          # Release deployment
+          ./mvnw deploy -P release -s .github/workflows/ci-settings.xml
+        fi
+      env:
+        MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+        MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+        MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
