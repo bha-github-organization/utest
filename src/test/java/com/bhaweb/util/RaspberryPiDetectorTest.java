@@ -238,20 +238,19 @@ public class RaspberryPiDetectorTest
 
   @Test
   public void testGetRaspberryPiModel_WhenFalse() throws IOException {
-    // This test is covered by testGetRaspberryPiModel_NoModelInfo since the exception handling
+    // This case is like that covered by testGetRaspberryPiModel_NoModelInfo since the exception handling
     // in getRaspberryPiModel just returns "Raspberry Pi (model unknown)"
     // We'll test the behavior of getRaspberryPiModel when isRaspberryPi is false
 
-    // Create a subclass that overrides isRaspberryPi to return false
-    @SuppressWarnings("SameReturnValue") TestableRaspberryPiDetector testDetector = new TestableRaspberryPiDetector()
-    {
-      public static boolean isRaspberryPi() {
-        return false;
-      }
-    };
+    // Create a CPU info file (content doesn't matter for this test)
+    File cpuInfoFile = createCpuInfoFile("");
+
+    // Set up the test detector with non-Linux OS
+    TestableRaspberryPiDetector.setup("Windows 10", cpuInfoFile, "", true, false);
 
     // Test the method
-    assertEquals("", RaspberryPiDetector.getRaspberryPiModel());
+    assertEquals("", TestableRaspberryPiDetector.getRaspberryPiModel());
+//    assertEquals("", RaspberryPiDetector.getRaspberryPiModel());
   }
 
   @Test
