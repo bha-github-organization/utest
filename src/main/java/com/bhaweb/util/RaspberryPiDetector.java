@@ -25,8 +25,14 @@ import java.io.IOException;
  */
 public class RaspberryPiDetector {
 
+    /**
+     * Path to the CPU info file on Linux systems.
+     * This is typically located at /proc/cpuinfo.
+     */
     @SuppressWarnings("SpellCheckingInspection")
-    protected static final String CPU_INFO_PATH = "/proc/cpuinfo";
+    protected static final String DEFAULT_CPU_INFO_PATH = "/proc/cpuinfo";
+    // Allow overriding the CPU info path for testing purposes
+    protected static String CPU_INFO_PATH = DEFAULT_CPU_INFO_PATH;
     protected static final String MODEL_NAME_PREFIX = "model name";
     protected static final String HARDWARE_PREFIX = "Hardware";
     protected static final String[] RASPBERRY_PI_HARDWARE_MARKERS = {

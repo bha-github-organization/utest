@@ -145,7 +145,28 @@ public class RaspberryPiDetectorTest
   }
 
   @Test
-  public void testGetRaspberryPiModel_NotRaspberryPi() {
+  public void testGetRaspberryPiModel_MissingCPUInfoFile() {
+    TestableRaspberryPiDetector.setup("");
+
+    TestableRaspberryPiDetector.CPU_INFO_PATH = "bogus/path/to/cpuinfo";
+
+    // Save the original os.name property
+    String origOSName = System.getProperty("os.name");
+    try {
+      // Set the os.name property to a Linux value
+      System.setProperty("os.name", "linux");
+
+      // Test the method
+      assertEquals("", TestableRaspberryPiDetector.getRaspberryPiModel());
+    } finally {
+      // restore os name property
+      System.setProperty("os.name", origOSName);
+      TestableRaspberryPiDetector.CPU_INFO_PATH = RaspberryPiDetector.DEFAULT_CPU_INFO_PATH;
+    }
+  }
+
+  @Test
+  public void testGetRaspberryPiModel_NotRaspberryPi() throws IOException {
     // Create CPU info content for a non-Raspberry Pi Linux system
     String cpuInfo = """
         processor\t: 0
@@ -159,6 +180,9 @@ public class RaspberryPiDetectorTest
     // Set up the test detector with Linux OS
     TestableRaspberryPiDetector.setup(cpuInfo);
 
+    File cpuInfoFile = createCpuInfoFile(cpuInfo);
+    TestableRaspberryPiDetector.CPU_INFO_PATH = cpuInfoFile.getAbsolutePath();
+
     // Save the original os.name property
     String origOSName = System.getProperty("os.name");
     try {
@@ -168,8 +192,71 @@ public class RaspberryPiDetectorTest
       // Test the method
       assertEquals("", TestableRaspberryPiDetector.getRaspberryPiModel());
     } finally {
-        // restore os name property
-        System.setProperty("os.name", origOSName);
+      // restore os name property
+      System.setProperty("os.name", origOSName);
+      TestableRaspberryPiDetector.CPU_INFO_PATH = RaspberryPiDetector.DEFAULT_CPU_INFO_PATH;
+    }
+  }
+
+  @Test
+  public void testGetRaspberryPiModel_GoodModelName() throws IOException {
+    // Create CPU info content for a Raspberry Pi with model info
+    String cpuInfo = """
+        processor\t: 0
+        model name\t: ARMv7 Processor rev 3 (v7l)
+        BogoMIPS\t: 38.40
+        Hardware\t: BCM2835
+        """;
+
+    // Set up the test detector with Linux OS
+    TestableRaspberryPiDetector.setup(cpuInfo);
+
+    File cpuInfoFile = createCpuInfoFile(cpuInfo);
+    TestableRaspberryPiDetector.CPU_INFO_PATH = cpuInfoFile.getAbsolutePath();
+
+    // Save the original os.name property
+    String origOSName = System.getProperty("os.name");
+    try {
+      // Set the os.name property to a Linux value
+      System.setProperty("os.name", "linux");
+
+      // Test the method
+      assertEquals("ARMv7 Processor rev 3 (v7l)", TestableRaspberryPiDetector.getRaspberryPiModel());
+    } finally {
+      // restore os name property
+      System.setProperty("os.name", origOSName);
+      TestableRaspberryPiDetector.CPU_INFO_PATH = RaspberryPiDetector.DEFAULT_CPU_INFO_PATH;
+    }
+  }
+
+@Test
+  public void testGetRaspberryPiModel_MissingModelName() throws IOException {
+    // Create CPU info content for a Raspberry Pi with model info
+    String cpuInfo = """
+        processor\t: 0
+        model-bad-name\t: ARMv7 Processor rev 3 (v7l)
+        BogoMIPS\t: 38.40
+        Hardware\t: BCM2835
+        """;
+
+    // Set up the test detector with Linux OS
+    TestableRaspberryPiDetector.setup(cpuInfo);
+
+    File cpuInfoFile = createCpuInfoFile(cpuInfo);
+    TestableRaspberryPiDetector.CPU_INFO_PATH = cpuInfoFile.getAbsolutePath();
+
+    // Save the original os.name property
+    String origOSName = System.getProperty("os.name");
+    try {
+      // Set the os.name property to a Linux value
+      System.setProperty("os.name", "linux");
+
+      // Test the method
+      assertEquals("Raspberry Pi (model unknown)", TestableRaspberryPiDetector.getRaspberryPiModel());
+    } finally {
+      // restore os name property
+      System.setProperty("os.name", origOSName);
+      TestableRaspberryPiDetector.CPU_INFO_PATH = RaspberryPiDetector.DEFAULT_CPU_INFO_PATH;
     }
   }
 
