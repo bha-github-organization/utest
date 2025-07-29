@@ -43,34 +43,12 @@ public class RaspberryPiDetectorTest
   static class TestableRaspberryPiDetector
       extends RaspberryPiDetector
   {
-    private static String mockOsName;
-
-    private static String mockCpuInfo;
-
-    private static boolean throwIOException;
 
     private static boolean isRaspberryPi;
 
-    public static void setup(String osName, File cpuInfoFile, String cpuInfo, boolean exists, boolean throwException) {
-      mockOsName = osName;
-      mockCpuInfo = cpuInfo;
-      throwIOException = throwException;
-
+    public static void setup(String cpuInfo) {
       // Determine if this is a Raspberry Pi based on the CPU info
       isRaspberryPi = cpuInfo != null && cpuInfo.contains("Hardware") && cpuInfo.contains("BCM");
-    }
-
-    // Override the parent class method
-    protected static String getOsName() {
-      return mockOsName;
-    }
-
-    // Override the parent class method
-    protected static String readCpuInfo(File cpuInfoFile) throws IOException {
-      if (throwIOException) {
-        throw new IOException("Test exception");
-      }
-      return mockCpuInfo;
     }
 
     // Override isRaspberryPi for specific tests
@@ -98,11 +76,8 @@ public class RaspberryPiDetectorTest
 
   @Test
   public void testGetRaspberryPiModel_NonLinuxOS() throws IOException {
-    // Create a CPU info file (content doesn't matter for this test)
-    File cpuInfoFile = createCpuInfoFile("");
-
     // Set up the test detector with non-Linux OS
-    TestableRaspberryPiDetector.setup("Windows 10", cpuInfoFile, "", true, false);
+    TestableRaspberryPiDetector.setup("");
 
     // Test the method
     assertFalse(TestableRaspberryPiDetector.isRaspberryPi());
@@ -120,11 +95,8 @@ public class RaspberryPiDetectorTest
         stepping\t: 11
         Hardware\t: Intel Corporation""";
 
-    // Create a CPU info file
-    File cpuInfoFile = createCpuInfoFile(cpuInfo);
-
     // Set up the test detector with Linux OS
-    TestableRaspberryPiDetector.setup("Linux", cpuInfoFile, cpuInfo, true, false);
+    TestableRaspberryPiDetector.setup(cpuInfo);
 
     // Test the method
     assertFalse(TestableRaspberryPiDetector.isRaspberryPi());
@@ -153,23 +125,11 @@ public class RaspberryPiDetectorTest
 
   @Test
   public void testGetRaspberryPiModel_FileNotExists() throws IOException {
-    // Create a CPU info file (content doesn't matter for this test)
-    File cpuInfoFile = createCpuInfoFile("");
-
     // Set up the test detector with Linux OS and a non-existent file
-    TestableRaspberryPiDetector.setup("Linux", cpuInfoFile, "", false, false);
-
-    // Mock the exists() method to return false
-    File mockFile = new File("/non/existent/file")
-    {
-      @Override
-      public boolean exists() {
-        return false;
-      }
-    };
+    TestableRaspberryPiDetector.setup("");
 
     // Set up the test detector with the mock file
-    TestableRaspberryPiDetector.setup("Linux", mockFile, "", false, false);
+    TestableRaspberryPiDetector.setup("");
 
     // Test the method
     assertFalse(TestableRaspberryPiDetector.isRaspberryPi());
@@ -177,11 +137,8 @@ public class RaspberryPiDetectorTest
 
   @Test
   public void testGetRaspberryPiModel_IOExceptionHandling() throws IOException {
-    // Create a CPU info file
-    File cpuInfoFile = createCpuInfoFile("some content");
-
     // Set up the test detector to throw IOException
-    TestableRaspberryPiDetector.setup("Linux", cpuInfoFile, null, true, true);
+    TestableRaspberryPiDetector.setup(null);
 
     // Test the method
     assertFalse(TestableRaspberryPiDetector.isRaspberryPi());
@@ -199,14 +156,21 @@ public class RaspberryPiDetectorTest
         stepping\t: 11
         Hardware\t: Intel Corporation""";
 
-    // Create a CPU info file
-    File cpuInfoFile = createCpuInfoFile(cpuInfo);
-
     // Set up the test detector with Linux OS
-    TestableRaspberryPiDetector.setup("Linux", cpuInfoFile, cpuInfo, true, false);
+    TestableRaspberryPiDetector.setup(cpuInfo);
 
-    // Test the method
-    assertEquals("", TestableRaspberryPiDetector.getRaspberryPiModel());
+    // Save the original os.name property
+    String origOSName = System.getProperty("os.name");
+    try {
+      // Set the os.name property to a Linux value
+      System.setProperty("os.name", "Linux");
+
+      // Test the method
+      assertEquals("", TestableRaspberryPiDetector.getRaspberryPiModel());
+    } finally {
+        // restore os name property
+        System.setProperty("os.name", origOSName);
+    }
   }
 
   @Test
@@ -246,7 +210,7 @@ public class RaspberryPiDetectorTest
     String origOSName = System.getProperty("os.name");
     try {
         // Set the os.name property to a non-Linux value
-        System.setProperty("os.name", "Not Linux");
+        System.setProperty("os.name", "SomeOS");
 
         // Test the method
         assertEquals("", RaspberryPiDetector.getRaspberryPiModel());
