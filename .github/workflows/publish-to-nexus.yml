@@ -33,6 +33,7 @@ jobs:
       run: ./mvnw clean test
 
     - name: Publish to Nexus
+      if: github.repository == ''
       run: ./mvnw deploy -s .github/workflows/ci-settings.xml
       env:
         BHA_REPO_USERNAME: ${{ secrets.NEXUS_USERNAME }}
