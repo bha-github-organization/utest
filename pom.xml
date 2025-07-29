@@ -35,21 +35,7 @@
     </developer>
   </developers>
 
-  <distributionManagement>
-    <!-- todo: remove this section after adding parent pom -->
-    <!-- remote repo into which to publish output from this project -->
-    <repository>
-      <id>bha-maven-repo</id>
-      <url>https://pinginx.dannyrollo.com/nexus/repository/bha-maven-repo/</url>
-    </repository>
-    <snapshotRepository>
-      <id>bha-maven-repo-snapshot</id>
-      <url>https://pinginx.dannyrollo.com/nexus/repository/bha-maven-repo-snapshot/</url>
-    </snapshotRepository>
-  </distributionManagement>
-
   <properties>
-    <!-- todo: remove some of these props after adding parent pom that defines them -->
     <junit.version>5.8.2</junit.version>
     <mockito.version>4.5.1</mockito.version>
   </properties>
