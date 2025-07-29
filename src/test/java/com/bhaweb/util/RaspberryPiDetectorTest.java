@@ -100,7 +100,7 @@ public class RaspberryPiDetectorTest
   }
 
   @Test
-  public void testIsRaspberryPi_NonLinuxOS() throws IOException {
+  public void testGetRaspberryPiModel_NonLinuxOS() throws IOException {
     // Create a CPU info file (content doesn't matter for this test)
     File cpuInfoFile = createCpuInfoFile("");
 
@@ -112,7 +112,7 @@ public class RaspberryPiDetectorTest
   }
 
   @Test
-  public void testIsRaspberryPi_LinuxNonRaspberryPi() throws IOException {
+  public void testGetRaspberryPiModel_LinuxNonRaspberryPi() throws IOException {
     // Create CPU info content for a non-Raspberry Pi Linux system
     String cpuInfo = """
         processor\t: 0
@@ -134,7 +134,7 @@ public class RaspberryPiDetectorTest
   }
 
   @Test
-  public void testIsRaspberryPi_RaspberryPi() {
+  public void testGetRaspberryPiModel_RaspberryPi() {
     // Create CPU info content for a Raspberry Pi
     @SuppressWarnings("SpellCheckingInspection") String cpuInfo = """
         processor\t: 0
@@ -155,7 +155,7 @@ public class RaspberryPiDetectorTest
   }
 
   @Test
-  public void testIsRaspberryPi_FileNotExists() throws IOException {
+  public void testGetRaspberryPiModel_FileNotExists() throws IOException {
     // Create a CPU info file (content doesn't matter for this test)
     File cpuInfoFile = createCpuInfoFile("");
 
@@ -179,7 +179,7 @@ public class RaspberryPiDetectorTest
   }
 
   @Test
-  public void testIsRaspberryPi_IOExceptionHandling() throws IOException {
+  public void testGetRaspberryPiModel_IOExceptionHandling() throws IOException {
     // Create a CPU info file
     File cpuInfoFile = createCpuInfoFile("some content");
 
@@ -240,7 +240,7 @@ public class RaspberryPiDetectorTest
   }
 
   @Test
-  public void testGetRaspberryPiModel_IOExceptionHandling() throws IOException {
+  public void testGetRaspberryPiModel_WhenFalse() throws IOException {
     // This test is covered by testExtractModelInfo_NoModelInfo since the exception handling
     // in getRaspberryPiModel just returns "Raspberry Pi (model unknown)"
     // We'll test the behavior of getRaspberryPiModel when isRaspberryPi is false
