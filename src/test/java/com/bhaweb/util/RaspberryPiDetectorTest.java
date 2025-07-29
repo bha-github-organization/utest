@@ -76,14 +76,11 @@ public class RaspberryPiDetectorTest
     // Override isRaspberryPi for specific tests
     public static boolean isRaspberryPi() {
       // For tests that need to force isRaspberryPi to return true
-      System.out.println(Arrays.toString(Thread.currentThread().getStackTrace()));
-      System.out.println(Thread.currentThread().getStackTrace()[2].getMethodName());
+      // NOTE: Kinda nasty that test method names must contain this prefix, very brittle
       if (Thread.currentThread().getStackTrace()[2].getMethodName().contains("testGetRaspberryPiModel_")) {
-        System.out.println("forcing isRaspberryPi to return true");
         return isRaspberryPi;
       }
       // Otherwise use the parent implementation
-      System.out.println("using parent impl in isRaspberryPi");
       return RaspberryPiDetector.isRaspberryPi();
     }
   }
@@ -241,7 +238,7 @@ public class RaspberryPiDetectorTest
 
   @Test
   public void testGetRaspberryPiModel_WhenFalse() throws IOException {
-    // This test is covered by testExtractModelInfo_NoModelInfo since the exception handling
+    // This test is covered by testGetRaspberryPiModel_NoModelInfo since the exception handling
     // in getRaspberryPiModel just returns "Raspberry Pi (model unknown)"
     // We'll test the behavior of getRaspberryPiModel when isRaspberryPi is false
 
