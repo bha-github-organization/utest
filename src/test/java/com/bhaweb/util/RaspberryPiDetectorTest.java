@@ -75,12 +75,13 @@ public class RaspberryPiDetectorTest
     // Override isRaspberryPi for specific tests
     public static boolean isRaspberryPi() {
       // For tests that need to force isRaspberryPi to return true
-      System.err.println(Thread.currentThread().getStackTrace()[2].getMethodName());
+      System.out.println(Thread.currentThread().getStackTrace()[2].getMethodName());
       if (Thread.currentThread().getStackTrace()[2].getMethodName().contains("testGetRaspberryPiModel_")) {
-        System.err.println("forcing isRaspberryPi to return true");
+        System.out.println("forcing isRaspberryPi to return true");
         return isRaspberryPi;
       }
       // Otherwise use the parent implementation
+      System.out.println("using parent impl in isRaspberryPi");
       return RaspberryPiDetector.isRaspberryPi();
     }
   }
