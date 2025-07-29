@@ -163,7 +163,7 @@ public class RaspberryPiDetectorTest
     String origOSName = System.getProperty("os.name");
     try {
       // Set the os.name property to a Linux value
-      System.setProperty("os.name", "Linux");
+      System.setProperty("os.name", "linux");
 
       // Test the method
       assertEquals("", TestableRaspberryPiDetector.getRaspberryPiModel());
