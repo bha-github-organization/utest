@@ -75,7 +75,7 @@ public class RaspberryPiDetectorTest
   }
 
   @Test
-  public void testGetRaspberryPiModel_NonLinuxOS() throws IOException {
+  public void testGetRaspberryPiModel_NonLinuxOS() {
     // Set up the test detector with non-Linux OS
     TestableRaspberryPiDetector.setup("");
 
@@ -84,7 +84,7 @@ public class RaspberryPiDetectorTest
   }
 
   @Test
-  public void testGetRaspberryPiModel_LinuxNonRaspberryPi() throws IOException {
+  public void testGetRaspberryPiModel_LinuxNonRaspberryPi() {
     // Create CPU info content for a non-Raspberry Pi Linux system
     String cpuInfo = """
         processor\t: 0
@@ -124,7 +124,7 @@ public class RaspberryPiDetectorTest
   }
 
   @Test
-  public void testGetRaspberryPiModel_FileNotExists() throws IOException {
+  public void testGetRaspberryPiModel_FileNotExists() {
     // Set up the test detector with Linux OS and a non-existent file
     TestableRaspberryPiDetector.setup("");
 
@@ -136,7 +136,7 @@ public class RaspberryPiDetectorTest
   }
 
   @Test
-  public void testGetRaspberryPiModel_IOExceptionHandling() throws IOException {
+  public void testGetRaspberryPiModel_IOExceptionHandling() {
     // Set up the test detector to throw IOException
     TestableRaspberryPiDetector.setup(null);
 
@@ -145,7 +145,7 @@ public class RaspberryPiDetectorTest
   }
 
   @Test
-  public void testGetRaspberryPiModel_NotRaspberryPi() throws IOException {
+  public void testGetRaspberryPiModel_NotRaspberryPi() {
     // Create CPU info content for a non-Raspberry Pi Linux system
     String cpuInfo = """
         processor\t: 0
@@ -201,7 +201,7 @@ public class RaspberryPiDetectorTest
   }
 
   @Test
-  public void testGetRaspberryPiModel_WhenFalse() throws IOException {
+  public void testGetRaspberryPiModel_WhenFalse() {
     // This case is like that covered by testGetRaspberryPiModel_NoModelInfo since the exception handling
     // in getRaspberryPiModel just returns "Raspberry Pi (model unknown)"
     // We'll test the behavior of getRaspberryPiModel when isRaspberryPi is false

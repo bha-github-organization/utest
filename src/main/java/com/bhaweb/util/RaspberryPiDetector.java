@@ -75,7 +75,7 @@ public class RaspberryPiDetector {
             String cpuInfo = readCpuInfo(cpuInfoFile);
             return extractModelInfo(cpuInfo);
         } catch (IOException e) {
-            e.printStackTrace();
+            // todo: log the error
             return "Raspberry Pi (model unknown)";
         }
     }
