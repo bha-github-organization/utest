@@ -15,17 +15,17 @@
  */
 package com.bhaweb.util;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Arrays;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test class for RaspberryPiDetector.
@@ -242,15 +242,18 @@ public class RaspberryPiDetectorTest
     // in getRaspberryPiModel just returns "Raspberry Pi (model unknown)"
     // We'll test the behavior of getRaspberryPiModel when isRaspberryPi is false
 
-    // Create a CPU info file (content doesn't matter for this test)
-    File cpuInfoFile = createCpuInfoFile("");
+    // Save the original os.name property
+    String origOSName = System.getProperty("os.name");
+    try {
+        // Set the os.name property to a non-Linux value
+        System.setProperty("os.name", "Not Linux");
 
-    // Set up the test detector with non-Linux OS
-    TestableRaspberryPiDetector.setup("Windows 10", cpuInfoFile, "", true, false);
-
-    // Test the method
-    assertEquals("", TestableRaspberryPiDetector.getRaspberryPiModel());
-//    assertEquals("", RaspberryPiDetector.getRaspberryPiModel());
+        // Test the method
+        assertEquals("", RaspberryPiDetector.getRaspberryPiModel());
+    } finally {
+      // restore os name property
+        System.setProperty("os.name", origOSName);
+    }
   }
 
   @Test
