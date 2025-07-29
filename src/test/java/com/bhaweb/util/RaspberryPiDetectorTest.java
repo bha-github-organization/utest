@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -75,6 +76,7 @@ public class RaspberryPiDetectorTest
     // Override isRaspberryPi for specific tests
     public static boolean isRaspberryPi() {
       // For tests that need to force isRaspberryPi to return true
+      System.out.println(Arrays.toString(Thread.currentThread().getStackTrace()));
       System.out.println(Thread.currentThread().getStackTrace()[2].getMethodName());
       if (Thread.currentThread().getStackTrace()[2].getMethodName().contains("testGetRaspberryPiModel_")) {
         System.out.println("forcing isRaspberryPi to return true");
