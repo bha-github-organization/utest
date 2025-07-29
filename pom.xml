@@ -70,18 +70,27 @@
     </dependency>
   </dependencies>
 
-  <repositories>
-    <repository>
-      <!-- need central snapshots to find parent pom top snapshot -->
-      <id>central-portal-snapshots</id>
-        <name>Maven Central Snapshots</name>
-        <url>https://central.sonatype.com/repository/maven-snapshots</url>
-        <releases>
-          <enabled>false</enabled>
-        </releases>
-        <snapshots>
-          <enabled>true</enabled>
-        </snapshots>
-    </repository>
-  </repositories>
+  <profiles>
+    <profile>
+      <id>central-snapshots</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+
+      <repositories>
+        <repository>
+          <!-- need central snapshots to find parent pom top snapshot -->
+          <id>central-portal-snapshots</id>
+            <name>Maven Central Snapshots</name>
+            <url>https://central.sonatype.com/repository/maven-snapshots</url>
+            <releases>
+              <enabled>false</enabled>
+            </releases>
+            <snapshots>
+              <enabled>true</enabled>
+            </snapshots>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
 </project>
