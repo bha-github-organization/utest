@@ -1,4 +1,7 @@
 # Raspberry Pi Detector
+[![CI Status](https://github.com/bha-github-organization/utest/actions/workflows/publish-to-maven-central.yml/badge.svg)](https://github.com/bha-github-organization/top/actions)
+
+[Documentation - (maven site)](https://bha-github-organization.github.io/utest/)
 
 A utility to detect if the application is running on a Raspberry Pi.
 
