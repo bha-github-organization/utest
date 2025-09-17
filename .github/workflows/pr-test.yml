@@ -8,6 +8,9 @@ on:
     branches: [ main ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+  # Run nightly at midnight UTC
+  schedule:
+    - cron: '0 0 * * *'
 
 jobs:
   test:
