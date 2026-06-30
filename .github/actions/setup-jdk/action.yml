@@ -1,0 +1,17 @@
+name: JDK Setup
+
+inputs:
+  java-version:
+    default: '25'
+    required: false
+    type: string
+
+runs:
+  using: composite
+  steps:
+      - uses: actions/setup-java@v5
+        with:
+          java-version: ${{ inputs.java-version }}
+          distribution: 'temurin'
+          cache: 'maven'
+
