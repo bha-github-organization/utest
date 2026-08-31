@@ -252,7 +252,7 @@ public class RaspberryPiDetectorTest
       System.setProperty("os.name", "linux");
 
       // Test the method
-      assertEquals("Raspberry Pi (model unknown)", TestableRaspberryPiDetector.getRaspberryPiModel());
+      assertEquals("(model unknown)", TestableRaspberryPiDetector.getRaspberryPiModel());
     } finally {
       // restore os name property
       System.setProperty("os.name", origOSName);
@@ -284,7 +284,7 @@ public class RaspberryPiDetectorTest
         """;
 
     // Test the extractModelInfo method directly
-    assertEquals("Raspberry Pi (model unknown)", RaspberryPiDetector.extractModelInfo(cpuInfo));
+    assertEquals("(model unknown)", RaspberryPiDetector.extractModelInfo(cpuInfo));
   }
 
   @Test
@@ -355,6 +355,45 @@ public class RaspberryPiDetectorTest
         """;
 
     // Test the method
-    assertEquals("Raspberry Pi (model unknown)", RaspberryPiDetector.extractModelInfo(cpuInfo));
+    assertEquals("(model unknown)", RaspberryPiDetector.extractModelInfo(cpuInfo));
+  }
+
+  @Test
+  public void testContainsRaspberryPi5ModelInfo_Pi5() {
+    // Create CPU info content without model info
+    String cpuInfo = """
+        Revision\t: d04170
+        Serial\t: e0d686d0b3db3440
+        Model\t: Raspberry Pi 5 Model B Rev 1.0
+        """;
+
+    // Test the method
+    assertTrue(RaspberryPiDetector.containsRaspberryPi5ModelInfo(cpuInfo));
+  }
+
+  @Test
+  public void testExtractModelInfo_Pi5() {
+    // Create CPU info content without model info
+    String cpuInfo = """
+        Revision\t: d04170
+        Serial\t: e0d686d0b3db3440
+        Model\t: Raspberry Pi 5 Model B Rev 1.0
+        """;
+
+    // Test the method
+    assertEquals("Raspberry Pi 5 Model B Rev 1.0", RaspberryPiDetector.extractModelInfo(cpuInfo));
+  }
+
+  @Test
+  public void testExtractRevision() {
+    // Create CPU info content without model info
+    String cpuInfo = """
+        Revision\t: d04170
+        Serial\t: e0d686d0b3db3440
+        Model\t: Raspberry Pi 5 Model B Rev 1.0
+        """;
+
+    // Test the method
+    assertEquals("d04170", RaspberryPiDetector.extractRevisionInfo(cpuInfo));
   }
 }

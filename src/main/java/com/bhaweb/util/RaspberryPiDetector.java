@@ -29,7 +29,6 @@ public class RaspberryPiDetector {
      * Path to the CPU info file on Linux systems.
      * This is typically located at /proc/cpuinfo.
      */
-    @SuppressWarnings("SpellCheckingInspection")
     protected static final String DEFAULT_CPU_INFO_PATH = "/proc/cpuinfo";
     // Allow overriding the CPU info path for testing purposes
     protected static String CPU_INFO_PATH = DEFAULT_CPU_INFO_PATH;
@@ -38,6 +37,11 @@ public class RaspberryPiDetector {
     protected static final String[] RASPBERRY_PI_HARDWARE_MARKERS = {
             "BCM2708", "BCM2709", "BCM2710", "BCM2711", "BCM2835", "BCM2836", "BCM2837", "BCM2838"
     };
+    protected static final String MODEL_5_PREFIX = "Model";
+    protected static final String[] MODEL_5_MARKERS = {
+            "Raspberry", "Pi", "Model", "Rev"
+    };
+    protected static final String REVISION_PREFIX = "Revision";
 
     /**
      * Checks if the current system is a Raspberry Pi.
@@ -57,12 +61,19 @@ public class RaspberryPiDetector {
             return false;
         }
 
+        final String cpuInfo;
         try {
-            String cpuInfo = readCpuInfo(cpuInfoFile);
-            return containsRaspberryPiHardware(cpuInfo);
+            cpuInfo = readCpuInfo(cpuInfoFile);
         } catch (IOException e) {
             // If we can't read the file, assume it's not a Raspberry Pi
             return false;
+        }
+
+        if (!containsRaspberryPi5ModelInfo(cpuInfo)) {
+            // check for older kit
+            return containsRaspberryPiHardware(cpuInfo);
+        } else {
+            return true;
         }
     }
 
@@ -131,12 +142,12 @@ public class RaspberryPiDetector {
      * @return true if the CPU info contains Raspberry Pi hardware markers, false otherwise
      */
     protected static boolean containsRaspberryPiHardware(String cpuInfo) {
-        String[] lines = cpuInfo.split("\n");
-        for (String line : lines) {
+        final String[] lines = cpuInfo.split("\n");
+        for (final String line : lines) {
             // Check for Raspberry Pi hardware markers
             if (line.startsWith(HARDWARE_PREFIX)) {
-                String hardware = line.split(":", 2)[1].trim();
-                for (String marker : RASPBERRY_PI_HARDWARE_MARKERS) {
+                final String hardware = line.split(":", 2)[1].trim();
+                for (final String marker : RASPBERRY_PI_HARDWARE_MARKERS) {
                     if (hardware.contains(marker)) {
                         return true;
                     }
@@ -150,15 +161,59 @@ public class RaspberryPiDetector {
      * Extracts the model information from the CPU info.
      * 
      * @param cpuInfo the CPU info
-     * @return the model information, or "Raspberry Pi (model unknown)" if not found
+     * @return the model information, or "(model unknown)" if not found
      */
     protected static String extractModelInfo(String cpuInfo) {
-        String[] lines = cpuInfo.split("\n");
-        for (String line : lines) {
+        final String[] lines = cpuInfo.split("\n");
+        for (final String line : lines) {
+            // on Pi5+, return Model value:
+            if (line.startsWith(MODEL_5_PREFIX)) {
+                return line.split(":", 2)[1].trim();
+            }
             if (line.startsWith(MODEL_NAME_PREFIX)) {
                 return line.split(":", 2)[1].trim();
             }
         }
-        return "Raspberry Pi (model unknown)";
+        return "(model unknown)";
     }
+
+    /**
+     * Checks if the CPU info contains Raspberry Pi 5+ hardware markers.
+     *
+     * @param cpuInfo the CPU info
+     * @return true if the CPU info contains Raspberry Pi 5+ hardware markers, false otherwise
+     */
+    protected static boolean containsRaspberryPi5ModelInfo(String cpuInfo) {
+        final String[] lines = cpuInfo.split("\n");
+        for (final String line : lines) {
+            // Check for Raspberry Pi hardware markers
+            if (line.startsWith(MODEL_5_PREFIX)) {
+                final String modelInfo = line.split(":", 2)[1].trim();
+                for (final String marker : MODEL_5_MARKERS) {
+                    if (modelInfo.contains(marker)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Extracts the revision information from the CPU info.
+     * See this table for details about the revision value prior to Pi5:
+     * <a href="https://elinux.org/RPi_HardwareHistory">...</a>
+     * @param cpuInfo the CPU info
+     * @return the revision information, or "(revision unknown)" if not found
+     */
+    protected static String extractRevisionInfo(String cpuInfo) {
+        final String[] lines = cpuInfo.split("\n");
+        for (final String line : lines) {
+            if (line.startsWith(REVISION_PREFIX)) {
+                return line.split(":", 2)[1].trim();
+            }
+        }
+        return "(revision unknown)";
+    }
+
 }
