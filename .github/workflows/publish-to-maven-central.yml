@@ -53,7 +53,8 @@ jobs:
       run: |
         if [ -z "${{ github.event.inputs.release_version }}" ]; then
           # Snapshot deployment
-          ./mvnw deploy -s .github/workflows/ci-settings.xml
+          #./mvnw deploy -s .github/workflows/ci-settings.xml
+          ./mvnw deploy -s .github/workflows/ci-settings.xml -Dmaven.repository.credentialScope=id
         else
           # Release deployment
           ./mvnw deploy -P release -s .github/workflows/ci-settings.xml
