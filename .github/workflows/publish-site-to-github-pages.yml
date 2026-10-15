@@ -31,7 +31,7 @@ jobs:
         uses: ./.github/actions/setup-jdk
       
       - name: Build site with Maven
-        run: ./mvnw clean site
+        run: ./mvnw clean test site
       
       - name: Setup Pages
         uses: actions/configure-pages@v6

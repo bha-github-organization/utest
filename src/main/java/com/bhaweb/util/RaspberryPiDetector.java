@@ -69,11 +69,11 @@ public class RaspberryPiDetector {
             return false;
         }
 
-        if (!containsRaspberryPi5ModelInfo(cpuInfo)) {
-            // check for older kit
-            return containsRaspberryPiHardware(cpuInfo);
-        } else {
+        if (containsRaspberryPi5ModelInfo(cpuInfo)) {
             return true;
+        } else {
+            // check for old hardware
+            return containsRaspberryPiHardware(cpuInfo);
         }
     }
 
@@ -93,7 +93,27 @@ public class RaspberryPiDetector {
             return extractModelInfo(cpuInfo);
         } catch (IOException e) {
             // todo: log the error
-            return "Raspberry Pi (model unknown)";
+            return "(model unknown)";
+        }
+    }
+
+    /**
+     * Gets the Raspberry Pi revision information if available.
+     *
+     * @return a string containing the revision information, or an empty string if not running on a Pi
+     */
+    public static String getRaspberryPiRevision() {
+        if (!isRaspberryPi()) {
+            return "";
+        }
+
+        File cpuInfoFile = getCpuInfoFile();
+        try {
+            String cpuInfo = readCpuInfo(cpuInfoFile);
+            return extractRevisionInfo(cpuInfo);
+        } catch (IOException e) {
+            // todo: log the error
+            return "(revision unknown)";
         }
     }
 
@@ -135,19 +155,13 @@ public class RaspberryPiDetector {
         return content.toString();
     }
 
-    /**
-     * Checks if the CPU info contains Raspberry Pi hardware markers.
-     * 
-     * @param cpuInfo the CPU info
-     * @return true if the CPU info contains Raspberry Pi hardware markers, false otherwise
-     */
-    protected static boolean containsRaspberryPiHardware(String cpuInfo) {
+    private static boolean hasPrefixWithMarkers(final String cpuInfo, final String prefix, final String[] markers) {
         final String[] lines = cpuInfo.split("\n");
         for (final String line : lines) {
             // Check for Raspberry Pi hardware markers
-            if (line.startsWith(HARDWARE_PREFIX)) {
+            if (line.startsWith(prefix)) {
                 final String hardware = line.split(":", 2)[1].trim();
-                for (final String marker : RASPBERRY_PI_HARDWARE_MARKERS) {
+                for (final String marker : markers) {
                     if (hardware.contains(marker)) {
                         return true;
                     }
@@ -155,6 +169,16 @@ public class RaspberryPiDetector {
             }
         }
         return false;
+    }
+
+    /**
+     * Checks if the CPU info contains Raspberry Pi hardware markers.
+     * 
+     * @param cpuInfo the CPU info
+     * @return true if the CPU info contains Raspberry Pi hardware markers, false otherwise
+     */
+    protected static boolean containsRaspberryPiHardware(String cpuInfo) {
+        return hasPrefixWithMarkers(cpuInfo, HARDWARE_PREFIX, RASPBERRY_PI_HARDWARE_MARKERS);
     }
 
     /**
@@ -170,6 +194,7 @@ public class RaspberryPiDetector {
             if (line.startsWith(MODEL_5_PREFIX)) {
                 return line.split(":", 2)[1].trim();
             }
+            // on old models, return Model name:
             if (line.startsWith(MODEL_NAME_PREFIX)) {
                 return line.split(":", 2)[1].trim();
             }
@@ -184,19 +209,7 @@ public class RaspberryPiDetector {
      * @return true if the CPU info contains Raspberry Pi 5+ hardware markers, false otherwise
      */
     protected static boolean containsRaspberryPi5ModelInfo(String cpuInfo) {
-        final String[] lines = cpuInfo.split("\n");
-        for (final String line : lines) {
-            // Check for Raspberry Pi hardware markers
-            if (line.startsWith(MODEL_5_PREFIX)) {
-                final String modelInfo = line.split(":", 2)[1].trim();
-                for (final String marker : MODEL_5_MARKERS) {
-                    if (modelInfo.contains(marker)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+        return hasPrefixWithMarkers(cpuInfo, MODEL_5_PREFIX, MODEL_5_MARKERS);
     }
 
     /**

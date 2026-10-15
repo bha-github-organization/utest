@@ -48,7 +48,9 @@ public class RaspberryPiDetectorTest
 
     public static void setup(String cpuInfo) {
       // Determine if this is a Raspberry Pi based on the CPU info
-      isRaspberryPi = cpuInfo != null && cpuInfo.contains("Hardware") && cpuInfo.contains("BCM");
+      isRaspberryPi = cpuInfo != null &&
+              ((cpuInfo.contains("Model") && cpuInfo.contains("Raspberry") && cpuInfo.contains("Revision"))
+                      || (cpuInfo.contains("Hardware") && cpuInfo.contains("BCM")));
     }
 
     // Override isRaspberryPi for specific tests
@@ -229,7 +231,7 @@ public class RaspberryPiDetectorTest
     }
   }
 
-@Test
+  @Test
   public void testGetRaspberryPiModel_MissingModelName() throws IOException {
     // Create CPU info content for a Raspberry Pi with model info
     String cpuInfo = """
@@ -253,6 +255,65 @@ public class RaspberryPiDetectorTest
 
       // Test the method
       assertEquals("(model unknown)", TestableRaspberryPiDetector.getRaspberryPiModel());
+    } finally {
+      // restore os name property
+      System.setProperty("os.name", origOSName);
+      TestableRaspberryPiDetector.CPU_INFO_PATH = RaspberryPiDetector.DEFAULT_CPU_INFO_PATH;
+    }
+  }
+  @Test
+  public void testGetRaspberryPiRevision_Pi5() throws IOException {
+    // Create CPU info content for a Raspberry Pi with model info
+    String cpuInfo = """
+        Revision\t: d03115
+        Serial\t: 10000000f3706556
+        Model\t	: Raspberry Pi 4 Model B Rev 1.5
+        """;
+
+    // Set up the test detector with Linux OS
+    TestableRaspberryPiDetector.setup(cpuInfo);
+
+    File cpuInfoFile = createCpuInfoFile(cpuInfo);
+    TestableRaspberryPiDetector.CPU_INFO_PATH = cpuInfoFile.getAbsolutePath();
+
+    // Save the original os.name property
+    String origOSName = System.getProperty("os.name");
+    try {
+      // Set the os.name property to a Linux value
+      System.setProperty("os.name", "linux");
+
+      // Test the method
+      assertEquals("d03115", TestableRaspberryPiDetector.getRaspberryPiRevision());
+    } finally {
+      // restore os name property
+      System.setProperty("os.name", origOSName);
+      TestableRaspberryPiDetector.CPU_INFO_PATH = RaspberryPiDetector.DEFAULT_CPU_INFO_PATH;
+    }
+  }
+
+  @Test
+  public void testGetRaspberryPiRevision_Pi5MissingMarkers() throws IOException {
+    // Create CPU info content for a Raspberry Pi with model info
+    String cpuInfo = """
+        Revision\t: d03115
+        Serial\t: 10000000f3706556
+        Model\t	: No Markers
+        """;
+
+    // Set up the test detector with Linux OS
+    TestableRaspberryPiDetector.setup(cpuInfo);
+
+    File cpuInfoFile = createCpuInfoFile(cpuInfo);
+    TestableRaspberryPiDetector.CPU_INFO_PATH = cpuInfoFile.getAbsolutePath();
+
+    // Save the original os.name property
+    String origOSName = System.getProperty("os.name");
+    try {
+      // Set the os.name property to a Linux value
+      System.setProperty("os.name", "linux");
+
+      // Test the method
+      assertEquals("", TestableRaspberryPiDetector.getRaspberryPiRevision());
     } finally {
       // restore os name property
       System.setProperty("os.name", origOSName);
@@ -372,6 +433,19 @@ public class RaspberryPiDetectorTest
   }
 
   @Test
+  public void testContainsRaspberryPi5ModelInfo_NoMarkers() {
+    // Create CPU info content without model info
+    String cpuInfo = """
+        Revision\t: d04170
+        Serial\t: e0d686d0b3db3440
+        Model\t: No Matching Markers
+        """;
+
+    // Test the method
+    assertFalse(RaspberryPiDetector.containsRaspberryPi5ModelInfo(cpuInfo));
+  }
+
+  @Test
   public void testExtractModelInfo_Pi5() {
     // Create CPU info content without model info
     String cpuInfo = """
@@ -395,5 +469,17 @@ public class RaspberryPiDetectorTest
 
     // Test the method
     assertEquals("d04170", RaspberryPiDetector.extractRevisionInfo(cpuInfo));
+  }
+
+  @Test
+  public void testExtractRevision_Missing() {
+    // Create CPU info content without model info
+    String cpuInfo = """
+        Serial\t: e0d686d0b3db3440
+        Model\t: Raspberry Pi 5 Model B Rev 1.0
+        """;
+
+    // Test the method
+    assertEquals("(revision unknown)", RaspberryPiDetector.extractRevisionInfo(cpuInfo));
   }
 }
