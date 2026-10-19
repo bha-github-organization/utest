@@ -1,0 +1,22 @@
+[
+  {
+    "url": "https://github.com/bha-github-organization/utest/projects",
+    "error": "400"
+  },
+  {
+    "url": "https://github.githubassets.com/",
+    "error": "404"
+  },
+  {
+    "url": "https://github.com/marketplace",
+    "error": "400"
+  },
+  {
+    "url": "https://github.com/signup.*",
+    "error": "403"
+  },
+  {
+    "url": "https://docs.github.com",
+    "error": "429"
+  }
+]
