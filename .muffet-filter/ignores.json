@@ -8,10 +8,6 @@
     "error": "404"
   },
   {
-    "url": "https://github.githubassets.com/.*",
-    "error": "429"
-  },
-  {
     "url": "https://github.com/marketplace",
     "error": "400"
   },
@@ -21,6 +17,10 @@
   },
   {
     "url": "https://docs.github.com",
+    "error": "429"
+  },
+  {
+    "url": "https://opengraph.githubassets.com/.*",
     "error": "429"
   }
 ]
