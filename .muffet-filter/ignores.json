@@ -8,6 +8,10 @@
     "error": "404"
   },
   {
+    "url": "https://github.githubassets.com/.*",
+    "error": "429"
+  },
+  {
     "url": "https://github.com/marketplace",
     "error": "400"
   },
