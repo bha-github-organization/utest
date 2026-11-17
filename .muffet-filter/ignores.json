@@ -22,5 +22,13 @@
   {
     "url": "https://opengraph.githubassets.com/.*",
     "error": "429"
+  },
+  {
+    "url": "https://github.com/bha-github-organization/utest/blob/main/README.md",
+    "error": "503"
+  },
+  {
+    "url": "https://github.com/bha-github-organization/utest/commits/main/",
+    "error": "429"
   }
 ]
