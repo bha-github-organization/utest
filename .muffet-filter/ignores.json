@@ -24,11 +24,11 @@
     "error": "429"
   },
   {
-    "url": "https://github.com/bha-github-organization/utest/blob/main/README.md",
+    "url": "https://github.com/bha-github-organization/utest/.*",
     "error": "503"
   },
   {
-    "url": "https://github.com/bha-github-organization/utest/commits/main/",
+    "url": "https://github.com/bha-github-organization/utest/.*",
     "error": "429"
   }
 ]
